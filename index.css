@@ -55,8 +55,9 @@ body {
 	BLOC ENTETE
 --------------------------------------------------------------- */
 #bcEntete {
-	background: url(images/entete_deconnecte.jpg) no-repeat;
+	background: url(./images/entete_deconnecte.jpg) no-repeat;
 	height: 271px;
+	width: 745px;
 	position: relative;
 	}
 

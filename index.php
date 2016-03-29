@@ -10,6 +10,8 @@
 				'</head>',
 				'<body>',
 					'<div id="bcPage">',
+					'<header id="bcEntete">',
+					'</header>',
 					'<img id="megaphone" class="photoDroite" src="../images/photos/megaphone.jpg">',
 					'<form method="POST" action="inscription.php">',
 					'<h1>Connectez-vous</h1>',
