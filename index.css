@@ -1,0 +1,112 @@
+/* ---------------------------------------------------------------
+			RE-INITIALISATION DES TAGS HTML
+	Pour éviter les valeurs par défaut différentes suivant les 
+	navigateurs. Seuls les tags le plus	souvent utilisés et non 
+	dépréciés sont pris en compte.
+	Reset complet : http://meyerweb.com/eric/tools/css/reset/
+--------------------------------------------------------------- */
+html, body, div, span, applet, iframe,
+h1, h2, h3, h4, h5, h6, p, pre,
+a, img, strong, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	font-weight: normal;	
+	vertical-align: baseline;
+	background: transparent;
+	}
+body {
+	line-height: 1;
+	}	
+ol, ul {
+	list-style: none;
+	}
+table { 
+	border-collapse: collapse;
+	border-spacing: 0;
+	}
+	
+/* ---------------------------------------------------------------
+	FEUILLE DE STYLE ORIGINALE	
+--------------------------------------------------------------- */
+html {
+	height: 100%
+	}
+body {
+	background: #20190f;
+	color: #e8dbb1;
+	font: 16px/1.6 Verdana, Geneva, Sans-Serif;
+	height: 100%;
+	}
+
+#bcPage {
+	background: url(images/fond.jpg);
+	height: 100%;
+	margin: 0 auto;
+	width: 800px;
+	}
+
+/* ---------------------------------------------------------------
+	BLOC ENTETE
+--------------------------------------------------------------- */
+#bcEntete {
+	background: url(images/entete.jpg) no-repeat;
+	height: 271px;
+	position: relative;
+	}
+
+/* ---------------------------------------------------------------
+	BLOC BODY
+--------------------------------------------------------------- */
+p {
+	margin: 16px 32px;
+	}
+
+h1 {
+	border-bottom: 3px solid #e8dbb1;
+	font-size: 36px;
+	float: right;
+	font-weight: bold;
+	margin: 26px 0;
+	}
+
+a {
+	color: #3c96f1;
+	text-decoration: none;
+	}
+	
+a:hover {
+	text-decoration: underline;
+	}
+/* ---------------------------------------------------------------
+	BLOC PIED DE PAGE
+--------------------------------------------------------------- */
+#bcPied {
+	background: url(images/pied.png) no-repeat;
+	clear: both;
+	height: 65px;
+	padding: 10px 0 0 115px;
+	margin-top: 20px;
+	}
+	
+#bcPied li {
+	display: inline;
+	}
+	
+#bcPied a {
+	display: block;
+	float: left;
+	margin-right: 25px;
+	font-size: 12px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	}
+	
+#bcPied a:hover {
+	opacity: 1;
+	filter: alpha(opacity=100);
+	}
