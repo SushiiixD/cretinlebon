@@ -10,6 +10,7 @@
 				'</head>',
 				'<body>',
 					'<div id="bcPage">',
+					'<img id="megaphone" class="photoDroite" src="../images/photos/megaphone.jpg">',
 					'<form method="POST" action="inscription.php">',
 					'<h1>Connectez-vous</h1>',
 					'<p>Pour vous connecter à Cuiteur, il faut vous identifier :</p>',

@@ -41,10 +41,11 @@ body {
 	color: #e8dbb1;
 	font: 16px/1.6 Verdana, Geneva, Sans-Serif;
 	height: 100%;
+	text-align: center;
 	}
 
 #bcPage {
-	background: url(images/fond.jpg);
+	background: url(../images/fond.jpg);
 	height: 100%;
 	margin: 0 auto;
 	width: 800px;
@@ -54,7 +55,7 @@ body {
 	BLOC ENTETE
 --------------------------------------------------------------- */
 #bcEntete {
-	background: url(images/entete.jpg) no-repeat;
+	background: url(images/entete_deconnecte.jpg) no-repeat;
 	height: 271px;
 	position: relative;
 	}
@@ -69,9 +70,9 @@ p {
 h1 {
 	border-bottom: 3px solid #e8dbb1;
 	font-size: 36px;
-	float: right;
 	font-weight: bold;
 	margin: 26px 0;
+	text-align: right;
 	}
 
 a {
@@ -86,7 +87,7 @@ a:hover {
 	BLOC PIED DE PAGE
 --------------------------------------------------------------- */
 #bcPied {
-	background: url(images/pied.png) no-repeat;
+	background: url(../images/pied.png) no-repeat;
 	clear: both;
 	height: 65px;
 	padding: 10px 0 0 115px;
