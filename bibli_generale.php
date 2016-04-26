@@ -1,162 +1,191 @@
 <?php
-
-define('APP_BD_URL', 'localhost');
-define('APP_BD_USER', 'lebon_u');
-define('APP_BD_PASS', 'lebon_p');
-define('APP_BD_NOM', 'lebon_cuiteur');
-
-
-function jl_bd_connection() {
-	$bd = mysqli_connect(APP_BD_URL, APP_BD_USER, APP_BD_PASS, APP_BD_NOM);
-	if ($bd !== FALSE) {
-		$GLOBALS['bd'] = $bd;
-		return $GLOBALS['bd'];
+	/**
+	* Génére le code d'une ligne de formulaire :
+	*
+	* @param string		$gauche		Contenu de la colonne de gauche
+	* @param string		$droite		Contenu de la colonne de droite
+	*
+	* @return string Code HTML représentant une ligne de tableau
+	*/
+	function sc_form_ligne($gauche, $droite='') {
+		if ($droite == '') {
+			return "<tr><td colspan='2' class='tdGauche'>{$gauche}</td></tr>";
+		}
+		return "<tr><td class='tdGauche'>{$gauche}</td><td class='tdDroite'>{$droite}</td></tr>";
 	}
-
-	$msg = '<h4>Erreur de connexion base MySQL</h4>'
-			.'<div style="margin: 20px auto; width: 350px;">'
-				.'APP_BD_URL : '.APP_BD_URL
-				.'<br>APP_BD_USER : '.APP_BD_USER
-				.'<br>APP_BD_PASS : '.APP_BD_PASS
-				.'<br>APP_BD_NOM : '.APP_BD_NOM
-				.'<p>Erreur MySQL num&eacute;ro : '.mysqli_connect_errno($bd)
-				.'<br>'.mysqli_connect_error($bd)
-			.'</div>';
-	fd_bd_erreurExit($msg);
-}
-
-//___________________________________________________________________
-/**
- * Gestion d'une erreur de requÃªte base de donnÃ©es.
- *
- * @param resource	$bd		Connecteur sur la bd ouverte
- * @param string	$sql	requÃªte SQL provoquant l'erreur
- */
-function fd_bd_erreur($bd, $sql) {
-	$errNum = mysqli_errno($bd);
-	$errTxt = mysqli_error($bd);
-
-	// Collecte des informations facilitant le debugage
-	$msg = '<h4>Erreur de requÃªte</h4>'
-			."<pre><b>Erreur mysql :</b> $errNum"
-			."<br> $errTxt"
-			."<br><br><b>RequÃªte :</b><br> $sql"
-			.'<br><br><b>Pile des appels de fonction</b>';
-
-	// RÃ©cupÃ©ration de la pile des appels de fonction
-	$msg .= '<table border="1" cellspacing="0" cellpadding="2">'
-			.'<tr><td>Fonction</td><td>AppelÃ©e ligne</td>'
-			.'<td>Fichier</td></tr>';
-
-	$appels = debug_backtrace();
-	for ($i = 0, $iMax = count($appels); $i < $iMax; $i++) {
-		$msg .= '<tr align="center"><td>'
-				.$appels[$i]['function'].'</td><td>'
-				.$appels[$i]['line'].'</td><td>'
-				.$appels[$i]['file'].'</td></tr>';
+	
+	//_______________________________________________________________
+	/**
+	* Génére le code d'une zone input de formulaire (type input) :
+	*
+	* @param String		$type	le type de l'input ('text', 'hidden', ...)
+	* @param string		$name	Le nom de l'input
+	* @param String		$value	La valeur par défaut
+	* @param integer	$size	La taille de l'input 
+	*
+	* @return string Code HTML de la zone de formulaire 
+	*/
+	function sc_form_input($type, $name, $value, $size=0) {
+	   $value = htmlentities($value);
+	   $size = ($size == 0) ? '' : "size='{$size}'";
+	   $class = ($type == 'submit' || $type == 'reset') ? 'class="bouton"' : '';
+	   return "<input type='{$type}' name='{$name}' {$size} value=\"{$value}\" {$class}>";
 	}
-
-	$msg .= '</table></pre>';
-
-	fd_bd_erreurExit($msg);
-}			
-//___________________________________________________________________
-/**
- * ArrÃªt du script si erreur base de donnÃ©es.
- * Affichage d'un message d'erreur si on est en phase de
- * dÃ©veloppement, sinon stockage dans un fichier log.
- *
- * @param string	$msg	Message affichÃ© ou stockÃ©.
- */
-function fd_bd_erreurExit($msg) {
-	ob_end_clean();		// Supression de tout ce qui
-					// a pu Ãªtre dÃ©ja gÃ©nÃ©rÃ©
-
-	echo '<!DOCTYPE html><html><head><meta charset="ISO-8859-1"><title>',
-			'Erreur base de donnÃ©es</title></head><body>',
-			$msg,
-			'</body></html>';
-	exit();
-}
-
-//____________________________________________________________________________
-
-/**
- * GÃ©nÃ©ration du code html de crÃ©ation d'une ligne d'un tableau utilisÃ© pour un formulaire, contenant 2 colonnes (gauche et droite)
- * 
- * @param string   $gauche	Contenu de la colonne de gauche
- * @param string   $droite	Contenu de la colonne de droite
- * @return string			Code html de crÃ©ation d'une ligne contenant les deux colonnes
- */
-function jl_form_ligne($gauche, $droite) {
-	return ('<tr><td>'. $gauche. '</td><td>'. $droite. '</td></tr>');
-}
-
-/**
- * GÃ©nÃ©ration du code html d'une zone de saisie (type text, password ou submit)
- * 
- * @param string   $type	Type de la zone
- * @param string   $name	Nom de la zone
- * @param string   $value	Valeur par dÃ©faut de la zone
- * @param int      $size	Taille de la zone (defaut = 0)
- * @return string			Code html de crÃ©ation de la zone de saisie
- */
-function jl_form_input($type, $name, $value, $size = 0) {
-	return ('<input type="'.$type.'" name="'.$name.'" size="'.$size.'" value="'.$value.'">');
-}
-
-//___________________________________________________________________
-/**
- * 	GÃ©nÃ©rer le code HTML pour les listes dÃ©roulantes date
- *  @param  $name 	Nom de la zone
- *  @param  $jour 	Jour prÃ©-sÃ©lectionnÃ©
- *  @param  $mois 	Mois prÃ©-sÃ©lectionnÃ©
- *  @param  $annee 	AnnÃ©e prÃ©-sÃ©lectionnÃ©e
- *	@return $html 	code html gÃ©nÃ©rÃ©
- */
- /*
-function jl_form_date($name, $jour, $mois, $annee)
-{
-	//Cas oÃ¹ les valeurs jour/mois/annÃ©e sont Ã©gales Ã  0
-	//Jour
-	if ($jour==0) {
-		$jour=date("d");
+	
+	//_______________________________________________________________
+	/**
+	* Génére le code d'une zone de texte de formulaire (type textarea) :
+	*
+	* @param string		$name	Le nom de la zone de texte
+	* @param string		$value	La valeur par dï¿½faut
+	* @param integer	$cols	Le nombre de colonnes du textarea
+	* @param integer	$rows	Le nombre de lignes du textarea
+	* @param string		$style	Un style à appliquer (code CSS)
+	*
+	* @return string Code HTML de la zone de texte
+	*/
+    function sc_form_textarea($name, $value, $cols, $rows, $style='') {
+        $value = htmlentities($value);
+        return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}' style='{$style}'>{$value}</textarea>";
 	}
-	//Mois
-	if ($mois==0) {
-		$mois=date("m");
+	
+	
+	//_______________________________________________________________	
+	/**
+	* Produit le code pour un ensemble de trois zones de sélection 
+	* représentant les jours, mois et années
+	*
+	* @param string		$nom	Préfixe pour les noms des zones
+	* @param integer	$jour 	Le jour sélectionné par défaut
+	* @param integer	$mois 	Le mois sélectionné par défaut
+	* @param integer	$annee	l'année sélectionnée par défaut
+	*
+	* @return string Le code HTML généré
+	*/
+	function sc_form_date($nom, $jour, $mois, $annee) {
+		$tab_jours = array();
+		
+		for ($i = 1; $i <= 31; $i++) {
+			$index = ($i < 10) ? "0{$i}" : $i;
+			$tab_jours[$index] = $i;
+		}
+		
+		$tab_mois = array('01' => 'janvier', '02' => 'février', '03' => 'mars', '04' => 'avril',
+						  '05' => 'mai', '06' => 'juin', '07' => 'juillet', '08' => 'août', 
+						  '09' => 'septembre', '10' => 'octobre', '11' => 'novembre', '12' => 'décembre');
+						  
+		$tab_annees = array();
+		$annee_max = date('Y');
+		$annee_min = $annee_max - 99;
+		
+		for ($i = $annee_min; $i <= $annee_max; $i++) {
+			$tab_annees[$i] = $i;
+		}
+        $ret = sc_form_choix(0, "{$nom}_j", $tab_jours, $jour) . '&nbsp;' .
+				sc_form_choix(0, "{$nom}_m", $tab_mois, $mois) . '&nbsp;' .
+				sc_form_choix(0, "{$nom}_a", $tab_annees, $annee);
+        return $ret;
 	}
-	//AnnÃ©e
-	if ($annee==0) {
-		$annee=date("Y");
+	function sc_form_choix($genre, $name, $options, $default, $sep='<br>') {
+		$ret = '';
+		switch ($genre) {
+		case 0: 
+			$ret = "<select name='{$name}'>";
+			foreach ($options as $val => $label) {
+				$label = htmlentities($label);
+				$vdefault = ($val == $default) ? 'selected="yes"' : '';
+				$ret .= "<option value='{$val}' {$vdefault}>{$label}</option>";
+			}
+			$ret .= '</select>';
+			return $ret;
+		}
+		return $ret;
 	}
-
-	//Nom des jours/mois/annÃ©e
-	$nameJ=$name."_j";
-	$nameM=$name."_m";
-	$nameA=$name."_a";
-
-	//Creation du code html
-	$html='<select name="'.$nameJ.'" value="'.$jour.'">';
-	for ($i=1; $i <10 ; $i++) { 
-		$html=$html.'<option value="0'.$i.'">'.$i.'</option>';
+	
+	/**
+	* Retourne une date en clair 
+	* 
+	* @param integer	$date	La date sur 8 entiers (AAAAMMJJ)
+	*
+	* @return string Une chaîne représentant la date sous la forme JJ mois AAAA. 
+	*/
+	function sc_date_claire($date) {
+		$tab_mois = array(1 => 'janvier', 2 => 'f&eacute;vrier', 3 => 'mars', 4 => 'avril',
+						  5 => 'mai', 6 => 'juin', 7 => 'juillet', 8 => 'ao&ucirc;t', 
+						  9 => 'septembre', 10 => 'octobre', 11 => 'novembre', 12 => 'd&eacute;cembre');
+		
+		$amj = sc_date_amj($date);
+		
+		return "{$amj[2]} {$tab_mois[$amj[1]]} {$amj[0]}";
 	}
-	for ($i=10; $i <32 ; $i++) { 
-		$html=$html.'<option value="'.$i.'">'.$i.'</option>';
+	//_______________________________________________________________	
+	/**
+	* Retourne l'année, le moi et le jour d'un date 
+	* 
+	* @param integer	$date	La date sur 8 entiers (AAAAMMJJ)
+	*
+	* @return array Tableau[année, mois, jour] 
+	*/
+	function sc_date_amj($date) {
+		$annee = floor($date / 10000);
+		$mois = floor(($date % 10000) / 100);
+		$jour = $date % 100;		
+		
+		return array($annee, $mois, $jour);
+	}	
+	//_______________________________________________________________		
+	/**
+	* Renvoie le temps écoulé entre maintenant et une date
+	*
+	* @param integer	$date	date issue d'un mktime 
+	* 
+	* @return string "il y a quelques secondes", "il y a N minutes/heures,jours,mois"
+	*/
+	function sc_date_diff($date) {
+		$now = time();
+		$diff = $now - $date;
+		if ($diff < 60) {
+			return 'Il y a quelques secondes';	
+		}
+		if ($diff < 3600) {
+			$nbMin = (int)($diff/60);
+			$s = ($nbMin == 1) ? '' : 's';
+			return ($nbMin < 5) ? "Il y a quelques minutes" : "il y a $nbMin minute$s"; 	
+		}
+		if ($diff < 3600*24) {
+			$nbHeures = (int)($diff/(60*60));
+			$s = ($nbHeures == 1) ? '' : 's';
+			return "Il y a $nbHeures heure{$s}"; 	
+		}
+		if ($diff < 3600*24*31) {
+			$nbJours = (int)($diff/(60*60*24));
+			$s = ($nbJours == 1) ? '' : 's';
+			return "Il y a $nbJours jour{$s}"; 	
+		}
+		
+		$nbMois = (int)($diff/(60*60*24*30));
+		return "Il y a {$nbMois} mois"; 	
+	}	
+	/**
+	* Vérifier une URL
+	* 
+	* @param string		$Url	L'url à tester
+	*
+	* @return boolean Vrai si l'url est valide, faux sinon. 
+	*/
+	function sc_ok_url($Url) {
+		return preg_match('~((https?://(w{3}\.)?)(?<!www)(\w+-?)*\.([a-z]{2,4}))~',$Url);
 	}
-	$html=$html.'</select><select name="'.$nameM.'" value="'.$mois.'">';
-	for ($i=1; $i <10 ; $i++) { 
-		$html=$html.'<option value="0'.$i.'">'.$i.'</option>';
+	//_______________________________________________________________
+	/**
+	 * Protection d'une chaine de caractêres avant de l'enregistrer dans une base de données
+	 * 
+	 * @param string		$txt	La chaîne à protêger
+	 * 
+	 * @return string La chaîne protégée
+	 */
+	function sc_bd_proteger($txt) {
+		$txt = trim($txt);
+		return mysql_real_escape_string($txt);
 	}
-	for ($i=10; $i <13 ; $i++) { 
-		$html=$html.'<option value="'.$i.'">'.$i.'</option>';
-	}
-	$html=$html.'</select><select name="'.$nameA .'" value="'.$annee.'">';
-	for ($i=date("Y"); $i >98 ; $i--) { 
-		$html=$html.'<option value="'.$i.'">'.$i.'</option>';
-	}
-	$html=$html.'</select>';
-	return $html;
-}
-*/
 ?>
